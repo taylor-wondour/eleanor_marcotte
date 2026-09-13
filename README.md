@@ -1,8 +1,13 @@
 # Eleanor Marcotte — Live What Is Yours
 
-A single-page author site. Static HTML, CSS, and one small JavaScript file — no
+A two-page author site. Static HTML, CSS, and one small JavaScript file — no
 build step, no framework, no dependencies to install. Drop it in a repository
 and turn on GitHub Pages.
+
+- **`index.html`** — the home page. The sun from the workbook cover, Eleanor's
+  name, two buttons, a footer. Nothing else.
+- **`books.html`** — the Live What Is Yours series: the statement, all six
+  books with their status and Amazon links, Eleanor's bio, the closing quote.
 
 ---
 
@@ -12,7 +17,7 @@ Everything you need to change is marked in the files.
 
 ### a. Amazon links (required)
 
-Open `index.html` and search for **`AMAZON-LINK`**. There are three, one per
+Open `books.html` and search for **`AMAZON-LINK`**. There are three, one per
 published book. Replace the `href` on the line below each comment:
 
 ```html
@@ -52,14 +57,15 @@ the browser console. Nothing silently breaks.
 
 ### c. Contact address
 
-`index.html`, search for **`CONTACT`**. Replace `hello@eleanormarcotte.com`
-with the real address, or delete that one line to drop the link.
+Search for **`CONTACT`** in `index.html` *and* `books.html` — it's in both
+footers. Replace `hello@eleanormarcotte.com` with the real address, or delete
+those two lines to drop the link.
 
 ### d. Site URL
 
-`index.html`, near the top — replace `https://example.com/` in the `canonical`
-and `og:url` tags with the real address. This is what link previews and search
-engines use.
+Near the top of `index.html` and `books.html` — replace `https://example.com/`
+in the `canonical` and `og:url` tags with the real address. This is what link
+previews and search engines use.
 
 ---
 
@@ -105,7 +111,8 @@ git push -u origin main
 ## 3. What's in here
 
 ```
-index.html                      the whole site
+index.html                      home page (name, sun, two buttons)
+books.html                      the series, the six books, the bio
 assets/css/styles.css           all styling, design tokens at the top
 assets/js/main.js               subscribe popup, scroll reveal, config
 assets/fonts/                   Bodoni Moda, self-hosted (OFL 1.1)
@@ -118,6 +125,12 @@ assets/img/apple-touch-icon.png home-screen icon
 .nojekyll                       tells GitHub Pages to serve files as-is
 ```
 
+The sun on the home page is drawn in SVG inside `index.html`, not a cropped
+image — a graded disc, a diamond crosshatch that densifies toward the rim, and
+a soft halo, using the workbook cover's own yellow (`#FECC06`). It stays sharp
+at any size and on any screen, and the name overlaps its lower third the way
+*LIVE* does on the printed cover.
+
 Fonts are self-hosted rather than loaded from Google, so the site has no
 third-party requests at all — faster, and nothing to disclose in a privacy
 policy.
@@ -126,7 +139,7 @@ policy.
 
 ## 4. Common edits
 
-**Move a book from Forthcoming to Available.** In `index.html`, find that
+**Move a book from Forthcoming to Available.** In `books.html`, find that
 book's `<li class="book">` and make three changes:
 
 1. Replace the placeholder block

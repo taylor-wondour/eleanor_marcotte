@@ -4,13 +4,13 @@
 <script>document.documentElement.classList.add('js');</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Eleanor Marcotte — Live What Is Yours</title>
-<meta name="description" content="Eleanor Marcotte is the author of Live What Is Yours, a self-discovery series of workbooks, journals, and trackers for paying attention to how you think, feel, and experience your life.">
+<title>Eleanor Marcotte</title>
+<meta name="description" content="Eleanor Marcotte, author of the Live What Is Yours series. Books available on Amazon.">
 <link rel="canonical" href="https://example.com/">
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="Eleanor Marcotte — Live What Is Yours">
-<meta property="og:description" content="A self-discovery series for paying attention to how you think, feel, and experience your life — and turning what you find into action.">
+<meta property="og:title" content="Eleanor Marcotte">
+<meta property="og:description" content="Author of the Live What Is Yours series. Books available on Amazon.">
 <meta property="og:image" content="assets/img/og.jpg">
 <meta property="og:url" content="https://example.com/">
 <meta name="twitter:card" content="summary_large_image">
@@ -34,241 +34,96 @@
 }
 </script>
 </head>
-<body>
+<body class="page-home">
 
 <a class="skip" href="#main">Skip to content</a>
 
-<header class="site-header" id="siteHeader">
-  <div class="wrap header-inner">
-    <a class="brand" href="#top">
-      <span class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7.25" stroke="currentColor" stroke-width="1.4"/><circle cx="12" cy="12" r="3.1" fill="currentColor"/></svg>
-      </span>
-      <span class="brand-name">Eleanor Marcotte</span>
-    </a>
-    <nav class="header-nav" aria-label="Primary">
-      <a class="nav-link" href="#books">Books</a>
-      <button class="btn btn-sm btn-solid" type="button" data-subscribe-open>Subscribe</button>
-    </nav>
+<main id="main" class="home">
+  <div class="wrap home-inner">
+
+    <!-- The sun from the workbook cover: graded disc, crosshatch densifying
+         toward the rim, soft halo. Drawn rather than cropped so it stays
+         crisp at any size. -->
+    <div class="sunrise" aria-hidden="true">
+      <div class="sunrise-window">
+        <div class="sun">
+      <svg class="sun-svg" viewBox="0 0 400 400" focusable="false">
+        <defs>
+          <radialGradient id="sunHalo" cx="50%" cy="50%" r="50%">
+            <stop offset="58%"  stop-color="#FBC70F" stop-opacity=".34"/>
+            <stop offset="78%"  stop-color="#FBC70F" stop-opacity=".15"/>
+            <stop offset="100%" stop-color="#FBC70F" stop-opacity="0"/>
+          </radialGradient>
+
+          <radialGradient id="sunDisc" cx="50%" cy="45%" r="54%">
+            <stop offset="0%"   stop-color="#FFD722"/>
+            <stop offset="36%"  stop-color="#FECC06"/>
+            <stop offset="72%"  stop-color="#F8CB18"/>
+            <stop offset="100%" stop-color="#EFD265"/>
+          </radialGradient>
+
+          <!-- atmosphere deepening toward the horizon -->
+          <linearGradient id="sunDeepen" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="46%"  stop-color="#DE8E00" stop-opacity="0"/>
+            <stop offset="78%"  stop-color="#DB8103" stop-opacity=".26"/>
+            <stop offset="100%" stop-color="#C96D04" stop-opacity=".58"/>
+          </linearGradient>
+
+          <pattern id="sunHatch" width="6.5" height="6.5"
+                   patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <path d="M0 0 V6.5 M0 0 H6.5" fill="none" stroke="#E3AE05" stroke-width="1.7"/>
+          </pattern>
+
+          <radialGradient id="hatchFade" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"   stop-color="#fff" stop-opacity=".16"/>
+            <stop offset="52%"  stop-color="#fff" stop-opacity=".52"/>
+            <stop offset="90%"  stop-color="#fff" stop-opacity=".95"/>
+            <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+          </radialGradient>
+          <mask id="hatchMask">
+            <circle cx="200" cy="200" r="150" fill="url(#hatchFade)"/>
+          </mask>
+
+          <radialGradient id="discFade" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"   stop-color="#fff" stop-opacity="1"/>
+            <stop offset="93%"  stop-color="#fff" stop-opacity="1"/>
+            <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+          </radialGradient>
+          <mask id="discMask">
+            <circle cx="200" cy="200" r="150" fill="url(#discFade)"/>
+          </mask>
+        </defs>
+
+        <circle class="sun-halo" cx="200" cy="200" r="200" fill="url(#sunHalo)"/>
+        <g mask="url(#discMask)">
+          <circle cx="200" cy="200" r="150" fill="url(#sunDisc)"/>
+          <circle cx="200" cy="200" r="150" fill="url(#sunDeepen)"/>
+        </g>
+        <g mask="url(#hatchMask)">
+          <rect x="40" y="40" width="320" height="320" fill="url(#sunHatch)"/>
+        </g>
+      </svg>
+        </div>
+      </div>
+      <div class="horizon"></div>
+    </div>
+
+    <h1 class="home-name rise" style="--d:.74s">Eleanor Marcotte</h1>
+
+    <div class="home-actions rise" style="--d:.88s">
+      <a class="btn btn-solid" href="books.html">Explore the books</a>
+      <button class="btn btn-ghost" type="button" data-subscribe-open>Subscribe</button>
+    </div>
+
+    <p class="home-note rise" style="--d:1s">Books available on Amazon</p>
   </div>
-</header>
-
-<main id="main">
-  <span id="top"></span>
-
-  <!-- ───────────────────────── Hero ───────────────────────── -->
-  <section class="hero">
-    <div class="wrap">
-      <p class="eyebrow reveal">The Live What Is Yours Series</p>
-
-      <h1 class="wordmark reveal" style="--d:.06s">
-        <span class="wordmark-1">Live</span>
-        <span class="wordmark-2">What Is Yours</span>
-      </h1>
-
-      <p class="lede reveal" style="--d:.12s">
-        A self-discovery process for paying attention to how you think, feel, and
-        experience your life — and for turning what you find into action.
-      </p>
-
-      <div class="hero-actions reveal" style="--d:.18s">
-        <a class="btn btn-solid" href="#books">Explore the books</a>
-        <button class="btn btn-ghost" type="button" data-subscribe-open>Subscribe</button>
-      </div>
-
-      <p class="hero-note reveal" style="--d:.24s">Available on Amazon</p>
-    </div>
-  </section>
-
-  <!-- ───────────────────────── Statement ───────────────────────── -->
-  <section class="statement">
-    <div class="wrap">
-      <div class="rule reveal" aria-hidden="true"></div>
-      <p class="statement-lead reveal" style="--d:.06s">
-        Does it all feel disconnected?<br>Find your clarity and act on it.
-      </p>
-      <div class="statement-body reveal" style="--d:.12s">
-        <p>
-          The series gives you the structure. You bring your own experiences, values,
-          and discoveries. Through reflection and practical tools, you learn to step
-          back and observe your life while also taking an active role in shaping how
-          you move through it.
-        </p>
-        <p>
-          You begin to recognize what pulls your attention away from what matters, and
-          learn to refocus in a way that feels like your own. Together, this creates
-          the connection.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ───────────────────────── Books ───────────────────────── -->
-  <section class="books" id="books" aria-labelledby="booksTitle">
-    <div class="wrap">
-      <header class="section-head reveal">
-        <p class="eyebrow">The Series</p>
-        <h2 class="section-title" id="booksTitle">Six books, one process.</h2>
-        <p class="section-sub">Published titles are available on Amazon. Forthcoming titles are announced to subscribers first.</p>
-      </header>
-
-      <ol class="book-list">
-
-        <!-- 1 — Workbook (published) -->
-        <li class="book reveal">
-          <picture class="book-cover">
-            <source srcset="assets/img/workbook.webp" type="image/webp">
-            <img src="assets/img/workbook.jpg" width="519" height="793" loading="lazy" decoding="async"
-                 alt="Cover of Live What Is Yours: A Workbook for Self-Discovery and Intentional Living by Eleanor Marcotte">
-          </picture>
-          <div class="book-body">
-            <p class="status status--live"><span class="dot" aria-hidden="true"></span>Available now</p>
-            <h3 class="book-title">Live What Is Yours: A&nbsp;Workbook for Self-Discovery and Intentional Living</h3>
-            <p class="book-desc">The workbook summarizing the Live What Is Yours process, with active exercises to move you through the foundation and the implementation.</p>
-            <div class="book-actions">
-              <!-- AMAZON-LINK: replace with the workbook's Amazon URL -->
-              <a class="btn btn-outline btn-sm" href="https://www.amazon.com/dp/REPLACE_WITH_ASIN" target="_blank" rel="noopener">
-                View on Amazon <span class="ext" aria-hidden="true">↗</span>
-              </a>
-            </div>
-          </div>
-        </li>
-
-        <!-- 2 — Companion Journal (published) -->
-        <li class="book reveal">
-          <picture class="book-cover">
-            <source srcset="assets/img/journal.webp" type="image/webp">
-            <img src="assets/img/journal.jpg" width="519" height="793" loading="lazy" decoding="async"
-                 alt="Cover of Live What Is Yours: A Companion Journal by Eleanor Marcotte">
-          </picture>
-          <div class="book-body">
-            <p class="status status--live"><span class="dot" aria-hidden="true"></span>Available now</p>
-            <h3 class="book-title">Live What Is Yours: A&nbsp;Companion Journal</h3>
-            <p class="book-desc">A companion journal to the workbook, used to support embodied presence building through daily sensory monitoring.</p>
-            <div class="book-actions">
-              <!-- AMAZON-LINK: replace with the journal's Amazon URL -->
-              <a class="btn btn-outline btn-sm" href="https://www.amazon.com/dp/REPLACE_WITH_ASIN" target="_blank" rel="noopener">
-                View on Amazon <span class="ext" aria-hidden="true">↗</span>
-              </a>
-            </div>
-          </div>
-        </li>
-
-        <!-- 3 — Daily Tracker & Notes (published) -->
-        <li class="book reveal">
-          <picture class="book-cover">
-            <source srcset="assets/img/tracker.webp" type="image/webp">
-            <img src="assets/img/tracker.jpg" width="519" height="793" loading="lazy" decoding="async"
-                 alt="Cover of Live What Is Yours: Daily Tracker &amp; Notes by Eleanor Marcotte">
-          </picture>
-          <div class="book-body">
-            <p class="status status--live"><span class="dot" aria-hidden="true"></span>Available now</p>
-            <h3 class="book-title">Live What Is Yours: Daily Tracker &amp; Notes</h3>
-            <p class="book-desc">A companion to the workbook, used as an activity tracking tool and a home for daily to-do items.</p>
-            <div class="book-actions">
-              <!-- AMAZON-LINK: replace with the tracker's Amazon URL -->
-              <a class="btn btn-outline btn-sm" href="https://www.amazon.com/dp/REPLACE_WITH_ASIN" target="_blank" rel="noopener">
-                View on Amazon <span class="ext" aria-hidden="true">↗</span>
-              </a>
-            </div>
-          </div>
-        </li>
-
-        <!-- 4 — Anchor book (forthcoming) -->
-        <li class="book reveal">
-          <div class="book-cover book-cover--placeholder" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7.25" stroke="currentColor" stroke-width="1"/><circle cx="12" cy="12" r="3.1" fill="currentColor"/></svg>
-          </div>
-          <div class="book-body">
-            <p class="status status--soon"><span class="dot" aria-hidden="true"></span>Forthcoming</p>
-            <h3 class="book-title">Live What Is Yours</h3>
-            <p class="book-desc">The anchor book to the Live What Is Yours process, told through personal commentary and research on scientific and spiritual connections.</p>
-            <div class="book-actions">
-              <button class="btn btn-outline btn-sm" type="button" data-subscribe-open>Get notified</button>
-            </div>
-          </div>
-        </li>
-
-        <!-- 5 — Embodied Presence Builder (forthcoming) -->
-        <li class="book reveal">
-          <div class="book-cover book-cover--placeholder" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7.25" stroke="currentColor" stroke-width="1"/><circle cx="12" cy="12" r="3.1" fill="currentColor"/></svg>
-          </div>
-          <div class="book-body">
-            <p class="status status--soon"><span class="dot" aria-hidden="true"></span>Forthcoming</p>
-            <h3 class="book-title">Live What Is Yours: Embodied Presence Builder <span class="tag">Working title</span></h3>
-            <p class="book-desc">A companion to the series, used to provide more opportunities of discovery and connection around embodied presence.</p>
-            <div class="book-actions">
-              <button class="btn btn-outline btn-sm" type="button" data-subscribe-open>Get notified</button>
-            </div>
-          </div>
-        </li>
-
-        <!-- 6 — Awareness Through Bias (forthcoming) -->
-        <li class="book reveal">
-          <div class="book-cover book-cover--placeholder" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7.25" stroke="currentColor" stroke-width="1"/><circle cx="12" cy="12" r="3.1" fill="currentColor"/></svg>
-          </div>
-          <div class="book-body">
-            <p class="status status--soon"><span class="dot" aria-hidden="true"></span>Forthcoming</p>
-            <h3 class="book-title">Live What Is Yours: Awareness Through Bias <span class="tag">Working title</span></h3>
-            <p class="book-desc">A companion to the series, providing more exercises around personal bias, comparisons, and external pressures.</p>
-            <div class="book-actions">
-              <button class="btn btn-outline btn-sm" type="button" data-subscribe-open>Get notified</button>
-            </div>
-          </div>
-        </li>
-
-      </ol>
-    </div>
-  </section>
-
-  <!-- ───────────────────────── About ───────────────────────── -->
-  <section class="about" aria-labelledby="aboutTitle">
-    <div class="wrap">
-      <div class="about-grid">
-        <div class="about-label reveal">
-          <p class="eyebrow">The Author</p>
-          <h2 class="section-title" id="aboutTitle">Eleanor Marcotte</h2>
-        </div>
-        <div class="about-body reveal" style="--d:.06s">
-          <p>
-            After a decade in corporate life, Eleanor Marcotte stepped away to explore why,
-            despite having built a successful life, something still felt slightly off.
-          </p>
-          <p>
-            That transition revealed her desire to help society see life through a kinder lens.
-            Though she began with an economic perspective, her own journey turned the focus
-            inward, leading to a deeper understanding of what influences us and what truly matters.
-          </p>
-          <p>
-            A wife and mother, Eleanor holds a BA in English and a BS in Finance. She writes from
-            the perspective of someone who has lived the questions she explores.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ───────────────────────── Closing CTA ───────────────────────── -->
-  <section class="closing">
-    <div class="wrap">
-      <p class="closing-quote reveal">
-        It may have all been done before,<br>but not through you.
-      </p>
-      <p class="closing-sub reveal" style="--d:.06s">Now is the time.</p>
-      <div class="reveal" style="--d:.12s">
-        <button class="btn btn-solid" type="button" data-subscribe-open>Subscribe for new releases</button>
-      </div>
-    </div>
-  </section>
 </main>
 
-<footer class="site-footer">
+<footer class="site-footer site-footer--home">
   <div class="wrap footer-inner">
     <p class="footer-brand">Eleanor&nbsp;Marcotte</p>
     <nav class="footer-nav" aria-label="Footer">
-      <a href="#books">Books</a>
+      <a href="books.html">Live What Is Yours</a>
       <button type="button" data-subscribe-open>Subscribe</button>
       <!-- CONTACT: replace with the real address, or delete this line -->
       <a href="mailto:hello@eleanormarcotte.com">Contact</a>

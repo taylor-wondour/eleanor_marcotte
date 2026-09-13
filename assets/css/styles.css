@@ -34,8 +34,10 @@
   --ink-3:      #8C857C;
   --line:       rgba(23,19,15,.12);
   --line-soft:  rgba(23,19,15,.07);
-  --sun:        #D9A21A;
+  --sun:        #D9A21A;   /* UI accent — darkened for contrast on cream */
+  --sun-core:   #FECC06;   /* the bright yellow at the centre of the cover's sun */
   --sun-soft:   #F2DFA6;
+  --horizon:    rgba(23,19,15,.32);
   --shadow:     0 1px 2px rgba(23,19,15,.05), 0 12px 28px -12px rgba(23,19,15,.18);
   --shadow-lg:  0 1px 2px rgba(23,19,15,.06), 0 28px 60px -20px rgba(23,19,15,.30);
 
@@ -62,7 +64,9 @@
     --line:      rgba(243,239,233,.14);
     --line-soft: rgba(243,239,233,.08);
     --sun:       #EAC15C;
+    --sun-core:  #FECC06;
     --sun-soft:  #4A3E22;
+    --horizon:   rgba(243,239,233,.30);
     --shadow:    0 1px 2px rgba(0,0,0,.5), 0 12px 28px -12px rgba(0,0,0,.7);
     --shadow-lg: 0 1px 2px rgba(0,0,0,.5), 0 28px 60px -20px rgba(0,0,0,.8);
     color-scheme: dark;
@@ -135,6 +139,7 @@ a{ color:inherit; }
    hairlines vanish at display sizes; pinning opsz keeps the stems as solid as
    they are on the printed covers. */
 .wordmark,
+.home-name,
 .section-title,
 .statement-lead,
 .book-title,
@@ -143,6 +148,7 @@ a{ color:inherit; }
   font-optical-sizing:none;
   font-variation-settings:"opsz" 16, "wght" 500;
 }
+.home-name{ font-variation-settings:"opsz" 16, "wght" 600; }
 .wordmark-1{ font-variation-settings:"opsz" 16, "wght" 500; }
 .wordmark-2{ font-variation-settings:"opsz" 16, "wght" 600; }
 .book-title{ font-variation-settings:"opsz" 15, "wght" 500; }
@@ -163,6 +169,7 @@ a{ color:inherit; }
   font-weight:500;
   margin-top:14px;
 }
+.section-title:first-child{ margin-top:0; }
 
 .section-sub{
   margin-top:14px;
@@ -293,23 +300,153 @@ a{ color:inherit; }
   .header-nav .nav-link{ display:none; }   /* the hero CTA still reaches Books */
 }
 
-/* ── Hero ────────────────────────────────────────────────────────────── */
+/* ── Home ────────────────────────────────────────────────────────────── */
 
-.hero{
-  padding-block: clamp(72px, 14vh, 150px) clamp(72px, 13vh, 140px);
+.page-home,
+html:has(.home) body{
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
+}
+.home{
+  flex:1;
+  display:grid;
+  place-items:center;
+  padding-block: clamp(48px, 9vh, 104px) clamp(44px, 8vh, 92px);
+  text-align:center;
+}
+
+.home-inner{
+  /* the sun is capped by viewport height so the whole page holds on a laptop */
+  --sun-size: min(clamp(230px, 40vw, 400px), 42vh);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+/* The sun rises from behind a horizon line. The line is the land: it clips the
+   disc, so the sun never reaches the name below it. */
+.sunrise{
+  width:min(720px, 100%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.sunrise-window{
+  position:relative;
+  width:100%;
+  height:calc(var(--sun-size) * .74);
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+}
+
+.sun{
+  width:var(--sun-size);
+  height:var(--sun-size);
+  flex:none;
+  animation:sunrise 1.85s cubic-bezier(.16,.7,.24,1) .16s both;
+}
+.sun-svg{ width:100%; height:100%; }
+
+/* Atmosphere: the disc thins into the ground as it nears the land. */
+.sunrise-window::after{
+  content:"";
+  position:absolute;
+  inset:0;                 /* full-height, so the overlay has no visible edge */
+  background:linear-gradient(to bottom,
+    transparent 58%,
+    color-mix(in srgb, var(--paper) 34%, transparent) 82%,
+    color-mix(in srgb, var(--paper) 78%, transparent) 100%);
+  pointer-events:none;
+}
+
+.horizon{
+  position:relative;
+  width:100%;
+  height:1px;
+  background:linear-gradient(to right,
+    transparent 0%,
+    var(--horizon) 16%,
+    var(--horizon) 84%,
+    transparent 100%);
+  animation:horizonIn 1s var(--ease) both;
+}
+
+/* Light spilling onto the land as the sun clears it. */
+.horizon::after{
+  content:"";
+  position:absolute;
+  left:50%; top:0;
+  width:calc(var(--sun-size) * 1.25);
+  height:calc(var(--sun-size) * .3);
+  transform:translateX(-50%);
+  background:radial-gradient(ellipse at 50% 0%,
+    color-mix(in srgb, var(--sun-core) 20%, transparent) 0%,
+    transparent 72%);
+  pointer-events:none;
+  animation:glowIn 1.5s var(--ease) .5s both;
+}
+
+@keyframes sunrise{
+  from{ transform:translateY(54%); opacity:0; }
+  30%{ opacity:1; }
+  to{ transform:translateY(0); opacity:1; }
+}
+@keyframes horizonIn{
+  from{ transform:scaleX(.24); opacity:0; }
+}
+@keyframes glowIn{
+  from{ opacity:0; }
+}
+
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .sun-halo{ opacity:.55; }
+}
+
+.home-name{
+  margin-top:clamp(26px, 4.4vh, 46px);
+  font-family:var(--serif);
+  font-size:clamp(38px, 8.4vw, 86px);
+  line-height:1.02;
+  letter-spacing:-.018em;
+  text-wrap:balance;
+}
+
+.home-actions{
+  margin-top:clamp(30px, 4.6vh, 44px);
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  justify-content:center;
+}
+
+.home-note{
+  margin-top:clamp(18px, 2.6vh, 24px);
+  font-size:12.5px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--ink-3);
+}
+
+/* ── Series masthead (books page) ────────────────────────────────────── */
+
+.series-head{
+  padding-block: clamp(56px, 10vh, 104px) clamp(52px, 9vh, 96px);
   text-align:center;
   position:relative;
   overflow:hidden;
 }
-.hero::before{
+.series-head::before{
   content:"";
   position:absolute;
-  top:-46vmax; left:50%;
-  width:92vmax; height:92vmax;
+  top:-44vmax; left:50%;
+  width:88vmax; height:88vmax;
   transform:translateX(-50%);
   background:radial-gradient(circle at 50% 50%,
-             color-mix(in srgb, var(--sun) 16%, transparent) 0%,
-             transparent 62%);
+             color-mix(in srgb, var(--sun-core) 10%, transparent) 0%,
+             transparent 58%);
   pointer-events:none;
   z-index:-1;
 }
@@ -345,22 +482,6 @@ a{ color:inherit; }
   line-height:1.55;
   color:var(--ink-2);
   text-wrap:balance;
-}
-
-.hero-actions{
-  margin-top:38px;
-  display:flex;
-  flex-wrap:wrap;
-  gap:12px;
-  justify-content:center;
-}
-
-.hero-note{
-  margin-top:22px;
-  font-size:12.5px;
-  letter-spacing:.1em;
-  text-transform:uppercase;
-  color:var(--ink-3);
 }
 
 /* ── Statement ───────────────────────────────────────────────────────── */
@@ -775,8 +896,19 @@ a{ color:inherit; }
 
 .btn[aria-busy="true"]{ opacity:.6; pointer-events:none; }
 
-/* ── Reveal on scroll ────────────────────────────────────────────────── */
+/* ── Motion ──────────────────────────────────────────────────────────── */
 
+/* Above-the-fold content animates on load and rests visible — never parked
+   waiting on a scroll observer. */
+.rise{
+  animation:rise .78s var(--ease) both;
+  animation-delay:var(--d, 0s);
+}
+@keyframes rise{
+  from{ opacity:0; transform:translateY(12px); }
+}
+
+/* Below-the-fold sections reveal as they arrive. */
 .reveal{
   opacity:0;
   transform:translateY(14px);

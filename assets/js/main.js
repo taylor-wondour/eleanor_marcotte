@@ -81,7 +81,7 @@ const SUBSCRIBE_ENDPOINT = "";
   }
 
   /* ── Smooth anchor scroll with sticky-header offset ───────────────── */
-  $$('a[href^="#"]').forEach((link) => {
+  $$('a[href^="#"]:not(.skip)').forEach((link) => {
     link.addEventListener("click", (e) => {
       const id = link.getAttribute("href");
       if (!id || id === "#") return;
