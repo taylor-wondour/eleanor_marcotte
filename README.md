@@ -11,9 +11,13 @@ and turn on GitHub Pages.
 
 ---
 
-## 1. Before you publish — four things to fill in
+## 1. Before you publish
 
-Everything you need to change is marked in the files.
+Everything you need to change is marked in the files. Two of the four below are
+already done; the Amazon links and the site URL still need you.
+
+All site communication — the subscribe form and the Contact link — goes to
+**authoreleanormarcotte@gmail.com**.
 
 ### a. Amazon links (required)
 
@@ -57,11 +61,11 @@ Switching services later is a one-line change — Formspree
 same shape, and make more sense once there's a real list to send to. Set the
 value to `""` and the popup says it isn't connected rather than pretending.
 
-### c. Contact address
+### c. Contact address — done
 
-Search for **`CONTACT`** in `index.html` *and* `books.html` — it's in both
-footers. Replace `hello@eleanormarcotte.com` with the real address, or delete
-those two lines to drop the link.
+The Contact link in both footers goes to **authoreleanormarcotte@gmail.com**,
+the same inbox as the subscribe form. To change it later, it's the one `mailto:`
+in each footer.
 
 ### d. Site URL
 
