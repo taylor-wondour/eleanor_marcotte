@@ -31,29 +31,31 @@ Use the book's Amazon detail-page URL. The short form works well:
 > (`?tag=yourtag-20`) — and note that Amazon requires the affiliate disclosure
 > to appear on the page. There's a spot for it in the footer.
 
-### b. Subscribe form (required for the popup to actually collect addresses)
+### b. Subscribe form — already wired, but activate it once
 
-Open `assets/js/main.js`. The first real line is:
+Subscriptions go to **authoreleanormarcotte@gmail.com** through FormSubmit,
+which just emails each new address. No account, nothing to log into. It is set
+at the top of `assets/js/main.js`:
 
 ```js
-const SUBSCRIBE_ENDPOINT = "";
+const SUBSCRIBE_ENDPOINT =
+  "https://formsubmit.co/ajax/authoreleanormarcotte@gmail.com";
 ```
 
-Paste in the form endpoint from whichever email service you use:
+**One thing to do after the site is live:** subscribe once yourself. FormSubmit
+replies to that inbox asking to confirm the address — click the link in that
+email and every submission from then on is delivered. Until someone confirms,
+nothing arrives.
 
-| Service    | Endpoint to paste                                                      |
-|------------|------------------------------------------------------------------------|
-| Formspree  | `https://formspree.io/f/xxxxxxxx`                                       |
-| Buttondown | `https://buttondown.email/api/emails/embed-subscribe/YOUR_USERNAME`     |
-| ConvertKit | `https://app.convertkit.com/forms/XXXXXXX/subscriptions`                |
-| Formsubmit | `https://formsubmit.co/ajax/you@example.com`                            |
+That confirmation email also contains a hashed endpoint
+(`https://formsubmit.co/ajax/<random-string>`). Pasting that in place of the
+address keeps the Gmail out of the page source, where scrapers read it. Worth
+doing.
 
-Formspree's free tier is the quickest way to start; Buttondown or ConvertKit
-make more sense once there's an actual list to send to.
-
-Until it's set, the popup still opens and validates, but submitting shows a
-setup note instead of pretending to have subscribed. There's also a warning in
-the browser console. Nothing silently breaks.
+Switching services later is a one-line change — Formspree
+(`https://formspree.io/f/xxxxxxxx`), Buttondown, and ConvertKit all take the
+same shape, and make more sense once there's a real list to send to. Set the
+value to `""` and the popup says it isn't connected rather than pretending.
 
 ### c. Contact address
 
@@ -125,11 +127,22 @@ assets/img/apple-touch-icon.png home-screen icon
 .nojekyll                       tells GitHub Pages to serve files as-is
 ```
 
-The sun on the home page is drawn in SVG inside `index.html`, not a cropped
-image — a graded disc, a diamond crosshatch that densifies toward the rim, and
-a soft halo, using the workbook cover's own yellow (`#FECC06`). It stays sharp
-at any size and on any screen, and the name overlaps its lower third the way
-*LIVE* does on the printed cover.
+The home page's sunrise is drawn, not photographed. The sun is SVG inside
+`index.html` — a graded disc, a diamond crosshatch densifying toward the rim, a
+halo, and an amber deepening toward its base. The sky, the horizon line and the
+halftone hills are CSS in `styles.css`. Nothing is a cropped image, so it stays
+exact at any size.
+
+Every colour comes from the printed covers, sampled from the art:
+
+| Token         | Value     | Where it comes from                        |
+|---------------|-----------|--------------------------------------------|
+| `--sun-core`  | `#FECC06` | the centre of the workbook cover's sun      |
+| `--sky`       | `#8FD4F1` | the blue band beneath it                    |
+| `--hill`      | `#27401F` | the dot range along the base of the covers  |
+| `--sand`      | `#A89675` | the warm ground under the dots              |
+
+All four have dark-mode counterparts in the `prefers-color-scheme` block.
 
 Fonts are self-hosted rather than loaded from Google, so the site has no
 third-party requests at all — faster, and nothing to disclose in a privacy

@@ -37,6 +37,13 @@
   --sun:        #D9A21A;   /* UI accent — darkened for contrast on cream */
   --sun-core:   #FECC06;   /* the bright yellow at the centre of the cover's sun */
   --sun-soft:   #F2DFA6;
+
+  /* the rest of the cover palette, sampled from the printed art */
+  --sky:        #8FD4F1;   /* the blue band beneath the sun */
+  --hill:       #27401F;   /* the halftone dot range along the base */
+  --sand:       #A89675;   /* the warm ground under it */
+  --haze:       color-mix(in srgb, var(--paper) 84%, var(--sky));
+  --hill-dot:   color-mix(in srgb, var(--hill) 66%, transparent);
   --horizon:    rgba(23,19,15,.32);
   --shadow:     0 1px 2px rgba(23,19,15,.05), 0 12px 28px -12px rgba(23,19,15,.18);
   --shadow-lg:  0 1px 2px rgba(23,19,15,.06), 0 28px 60px -20px rgba(23,19,15,.30);
@@ -66,6 +73,11 @@
     --sun:       #EAC15C;
     --sun-core:  #FECC06;
     --sun-soft:  #4A3E22;
+    --sky:       #2F5568;
+    --hill:      #9FB489;
+    --sand:      #7A6C54;
+    --haze:      color-mix(in srgb, var(--paper) 86%, var(--sky));
+    --hill-dot:  color-mix(in srgb, var(--hill) 40%, transparent);
     --horizon:   rgba(243,239,233,.30);
     --shadow:    0 1px 2px rgba(0,0,0,.5), 0 12px 28px -12px rgba(0,0,0,.7);
     --shadow-lg: 0 1px 2px rgba(0,0,0,.5), 0 28px 60px -20px rgba(0,0,0,.8);
@@ -312,13 +324,20 @@ html:has(.home) body{
   flex:1;
   display:grid;
   place-items:center;
-  padding-block: clamp(48px, 9vh, 104px) clamp(44px, 8vh, 92px);
+  padding-block: clamp(40px, 7vh, 84px) clamp(36px, 6vh, 74px);
   text-align:center;
 }
 
 .home-inner{
   /* the sun is capped by viewport height so the whole page holds on a laptop */
-  --sun-size: min(clamp(230px, 40vw, 400px), 42vh);
+  --sun-size: min(clamp(224px, 39vw, 392px), 38vh);
+
+  /* Nothing in the composition may show a straight edge: everything is faded
+     out at the sides, so the sky and the land end in air rather than in a box. */
+  --edge-fade:linear-gradient(to right,
+    transparent 0%, #000 13%, #000 87%, transparent 100%);
+
+
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -327,12 +346,13 @@ html:has(.home) body{
 /* The sun rises from behind a horizon line. The line is the land: it clips the
    disc, so the sun never reaches the name below it. */
 .sunrise{
-  width:min(720px, 100%);
+  width:min(760px, 100%);
   display:flex;
   flex-direction:column;
   align-items:center;
 }
 
+/* Sky: warm at the sun, cooling to the cover's blue band as it nears the land. */
 .sunrise-window{
   position:relative;
   width:100%;
@@ -340,6 +360,14 @@ html:has(.home) body{
   overflow:hidden;
   display:flex;
   justify-content:center;
+  /* An ellipse rising off the horizon rather than a band, so the sky has no
+     straight edge anywhere — it simply runs out of air. */
+  background:radial-gradient(78% 118% at 50% 100%,
+    color-mix(in srgb, var(--sky) 20%, transparent) 0%,
+    color-mix(in srgb, var(--sky) 10%, transparent) 44%,
+    transparent 76%);
+  -webkit-mask-image:var(--edge-fade);
+          mask-image:var(--edge-fade);
 }
 
 .sun{
@@ -357,13 +385,14 @@ html:has(.home) body{
   inset:0;                 /* full-height, so the overlay has no visible edge */
   background:linear-gradient(to bottom,
     transparent 58%,
-    color-mix(in srgb, var(--paper) 34%, transparent) 82%,
-    color-mix(in srgb, var(--paper) 78%, transparent) 100%);
+    color-mix(in srgb, var(--haze) 30%, transparent) 82%,
+    color-mix(in srgb, var(--haze) 72%, transparent) 100%);
   pointer-events:none;
 }
 
 .horizon{
   position:relative;
+  z-index:2;
   width:100%;
   height:1px;
   background:linear-gradient(to right,
@@ -389,6 +418,33 @@ html:has(.home) body{
   animation:glowIn 1.5s var(--ease) .5s both;
 }
 
+/* The halftone dot range from the base of the covers, receding below the
+   horizon. The contour is an SVG mask; the dots are a CSS pattern, so they
+   stay circular however wide the band gets. */
+.land{
+  position:relative;
+  z-index:1;
+  width:100%;
+  height:calc(var(--sun-size) * .25);
+  overflow:hidden;
+  -webkit-mask-image:var(--edge-fade);
+          mask-image:var(--edge-fade);
+  animation:landIn 1.4s var(--ease) .6s both;
+}
+
+/* Each dot rides its own column, rising and falling as the wave passes through
+   it — drawn per frame in `assets/js/main.js`, because a CSS pattern can only
+   ever be slid around, never made to swell. */
+.land-canvas{
+  display:block;
+  width:100%;
+  height:100%;
+}
+
+@keyframes landIn{
+  from{ opacity:0; transform:translateY(8px); }
+}
+
 @keyframes sunrise{
   from{ transform:translateY(54%); opacity:0; }
   30%{ opacity:1; }
@@ -406,7 +462,7 @@ html:has(.home) body{
 }
 
 .home-name{
-  margin-top:clamp(26px, 4.4vh, 46px);
+  margin-top:clamp(14px, 2.4vh, 28px);
   font-family:var(--serif);
   font-size:clamp(38px, 8.4vw, 86px);
   line-height:1.02;
@@ -657,36 +713,12 @@ html:has(.home) body{
   }
 }
 
-/* ── About ───────────────────────────────────────────────────────────── */
-
-.about{ padding-block:var(--sec); }
-
-.about-grid{ display:grid; gap:34px; }
-
-.about-body{
-  display:grid;
-  gap:20px;
-  color:var(--ink-2);
-  font-size:16.5px;
-  max-width:58ch;
-}
-
-@media (min-width:820px){
-  .about-grid{
-    grid-template-columns:1fr 1.25fr;
-    column-gap:clamp(40px, 7vw, 96px);
-    align-items:start;
-  }
-  .about-label .section-title{ margin-top:14px; }
-}
-
 /* ── Closing ─────────────────────────────────────────────────────────── */
 
 .closing{
   padding-block:var(--sec);
   text-align:center;
-  border-top:1px solid var(--line-soft);
-  background:var(--paper-2);
+  background:var(--paper);
 }
 
 .closing-quote{

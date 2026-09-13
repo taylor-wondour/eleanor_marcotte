@@ -7,15 +7,26 @@
 /**
  * Where subscribe submissions are sent.
  *
- * Leave as "" and the form will tell you (and only you, in the console) that
- * it is not connected yet. Paste one of these in to go live:
+ * Currently FormSubmit, which simply emails each new subscriber to
+ * authoreleanormarcotte@gmail.com. No account needed, but it must be
+ * ACTIVATED ONCE: the first time someone subscribes on the live site,
+ * FormSubmit emails that inbox asking to confirm. Click the link in that
+ * email and every submission after it is delivered. Until then, nothing
+ * arrives — so subscribe once yourself after publishing and confirm it.
  *
+ * After activating, FormSubmit shows a hashed endpoint in that same email
+ * (https://formsubmit.co/ajax/<random-string>). Swapping it in here keeps
+ * the address out of the page source, where scrapers can read it.
+ *
+ * Other services drop in the same way:
  *   Formspree   https://formspree.io/f/xxxxxxxx
  *   Buttondown  https://buttondown.email/api/emails/embed-subscribe/YOUR_USERNAME
  *   ConvertKit  https://app.convertkit.com/forms/XXXXXXX/subscriptions
- *   Formsubmit  https://formsubmit.co/ajax/you@example.com
+ *
+ * Set it to "" and the form says it isn't connected rather than pretending.
  */
-const SUBSCRIBE_ENDPOINT = "";
+const SUBSCRIBE_ENDPOINT =
+  "https://formsubmit.co/ajax/authoreleanormarcotte@gmail.com";
 
 /* ========================================================================== */
 
@@ -96,6 +107,140 @@ const SUBSCRIBE_ENDPOINT = "";
       history.replaceState(null, "", id);
     });
   });
+
+  /* ── The dot wave ─────────────────────────────────────────────────── */
+  /* A field of dots standing in fixed columns. A travelling swell — three
+     sine components at different wavelengths and speeds, so it never settles
+     into a visible rhythm — lifts and drops each column in turn. Nothing
+     slides sideways; the dots only ever move up and down. */
+  (function landWave() {
+    const canvas = $(".land-canvas");
+    if (!canvas || !canvas.getContext) return;
+
+    const ctx = canvas.getContext("2d");
+    const STEP = 8; // dot grid spacing, px
+
+    let w = 0,
+      h = 0,
+      hill = [39, 64, 31],
+      sand = [168, 150, 117],
+      raf = 0,
+      onScreen = true,
+      start = 0;
+
+    const toRGB = (v) => {
+      v = (v || "").trim();
+      return /^#[0-9a-f]{6}$/i.test(v)
+        ? [1, 3, 5].map((i) => parseInt(v.substr(i, 2), 16))
+        : null;
+    };
+
+    function readColours() {
+      const cs = getComputedStyle(document.documentElement);
+      hill = toRGB(cs.getPropertyValue("--hill")) || hill;
+      sand = toRGB(cs.getPropertyValue("--sand")) || sand;
+    }
+
+    function resize() {
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      const r = canvas.getBoundingClientRect();
+      w = Math.max(1, Math.round(r.width));
+      h = Math.max(1, Math.round(r.height));
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function draw(t) {
+      ctx.clearRect(0, 0, w, h);
+
+      const amp = h * 0.13;
+      const base = h * 0.36; // mean height of the crest line
+      const ceiling = h * 0.1; // keep the crests clear of the horizon line
+      const dr = hill[0] - sand[0],
+        dg = hill[1] - sand[1],
+        db = hill[2] - sand[2];
+
+      for (let x = STEP / 2; x < w; x += STEP) {
+        const surface = Math.max(
+          ceiling,
+          base +
+            amp * Math.sin(x / 168 + t * 0.42) +
+            amp * 0.58 * Math.sin(x / 79 - t * 0.29) +
+            amp * 0.34 * Math.sin(x / 312 + t * 0.17)
+        );
+
+        const depth = Math.max(h - surface, 1);
+
+        for (let y = surface; y < h; y += STEP) {
+          const d = (y - surface) / depth; // 0 at the crest, 1 at the base
+          const a = (1 - d) * (1 - d) * 0.8;
+          if (a < 0.015) break;
+          ctx.fillStyle =
+            "rgba(" +
+            Math.round(sand[0] + dr * (1 - d)) + "," +
+            Math.round(sand[1] + dg * (1 - d)) + "," +
+            Math.round(sand[2] + db * (1 - d)) + "," +
+            a.toFixed(3) + ")";
+          ctx.beginPath();
+          ctx.arc(x, y, 1.5 - d * 0.6, 0, 6.2832);
+          ctx.fill();
+        }
+      }
+    }
+
+    function frame(now) {
+      if (!start) start = now;
+      draw((now - start) / 1000);
+      raf = requestAnimationFrame(frame);
+    }
+
+    function play() {
+      if (raf || reduced || !onScreen || document.hidden) return;
+      raf = requestAnimationFrame(frame);
+    }
+    function pause() {
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+    }
+
+    readColours();
+    resize();
+    draw(0); // a still wave is on screen before the first frame runs
+
+    if (reduced) return; // reduced motion: the range simply stands still
+
+    if ("ResizeObserver" in window) {
+      new ResizeObserver(() => {
+        resize();
+        draw(raf ? (performance.now() - start) / 1000 : 0);
+      }).observe(canvas);
+    } else {
+      addEventListener("resize", () => {
+        resize();
+        draw(0);
+      });
+    }
+
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver((e) => {
+        onScreen = e[0].isIntersecting;
+        onScreen ? play() : pause();
+      }).observe(canvas);
+    }
+
+    document.addEventListener("visibilitychange", () =>
+      document.hidden ? pause() : play()
+    );
+
+    const dark = matchMedia("(prefers-color-scheme: dark)");
+    const onScheme = () => readColours();
+    dark.addEventListener
+      ? dark.addEventListener("change", onScheme)
+      : dark.addListener(onScheme);
+
+    play();
+  })();
 
   /* ── Subscribe dialog ─────────────────────────────────────────────── */
   const modal = $("#subscribeModal");
@@ -259,6 +404,9 @@ const SUBSCRIBE_ENDPOINT = "";
           email: value,
           email_address: value, // ConvertKit / Mailchimp style
           source: "eleanormarcotte.com",
+          _subject: "New subscriber — Live What Is Yours",
+          _captcha: "false", // FormSubmit: skip its captcha page for AJAX posts
+          _template: "table",
         }),
       });
     } catch (networkErr) {
