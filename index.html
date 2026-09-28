@@ -17,8 +17,7 @@
 
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
-<meta name="theme-color" content="#FBFAF8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#131211" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#EFD86F">
 
 <link rel="preload" href="assets/fonts/bodoni-moda-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/css/styles.css">
@@ -39,88 +38,66 @@
 <a class="skip" href="#main">Skip to content</a>
 
 <main id="main" class="home">
-  <div class="wrap home-inner">
 
-    <!-- The sun from the workbook cover: graded disc, crosshatch densifying
-         toward the rim, soft halo. Drawn rather than cropped so it stays
-         crisp at any size. -->
-    <div class="sunrise" aria-hidden="true">
-      <div class="sunrise-window">
-        <div class="sun">
+  <!-- The cover's top half, full bleed and running off the top of the page.
+       Colours are sampled straight off the printed art. -->
+  <section class="cover">
+
+    <div class="cover-field" aria-hidden="true">
+      <div class="cover-dots-static"></div>
+      <canvas class="cover-dots"></canvas>
+    </div>
+
+    <div class="cover-sun" aria-hidden="true">
       <svg class="sun-svg" viewBox="0 0 400 400" focusable="false">
         <defs>
-          <radialGradient id="sunHalo" cx="50%" cy="50%" r="50%">
-            <stop offset="58%"  stop-color="#FBC70F" stop-opacity=".34"/>
-            <stop offset="78%"  stop-color="#FBC70F" stop-opacity=".15"/>
-            <stop offset="100%" stop-color="#FBC70F" stop-opacity="0"/>
+          <!-- #F3D550 at the core, blooming to #FEFCE0 before it releases
+               into the field — the cover's own falloff, measured off it. -->
+          <radialGradient id="sunBloom" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"   stop-color="#F3D550"/>
+            <stop offset="28%"  stop-color="#F3D75A"/>
+            <stop offset="52%"  stop-color="#F1E794"/>
+            <stop offset="74%"  stop-color="#FDFAD5"/>
+            <stop offset="86%"  stop-color="#FEFCE0"/>
+            <stop offset="94%"  stop-color="#FEFCE0" stop-opacity=".5"/>
+            <stop offset="100%" stop-color="#FEFCE0" stop-opacity="0"/>
           </radialGradient>
 
-          <radialGradient id="sunDisc" cx="50%" cy="45%" r="54%">
-            <stop offset="0%"   stop-color="#FFD722"/>
-            <stop offset="36%"  stop-color="#FECC06"/>
-            <stop offset="72%"  stop-color="#F8CB18"/>
-            <stop offset="100%" stop-color="#EFD265"/>
-          </radialGradient>
-
-          <!-- atmosphere deepening toward the horizon -->
-          <linearGradient id="sunDeepen" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="46%"  stop-color="#DE8E00" stop-opacity="0"/>
-            <stop offset="78%"  stop-color="#DB8103" stop-opacity=".26"/>
-            <stop offset="100%" stop-color="#C96D04" stop-opacity=".58"/>
-          </linearGradient>
-
-          <pattern id="sunHatch" width="6.5" height="6.5"
+          <pattern id="sunHatch" width="11" height="11"
                    patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-            <path d="M0 0 V6.5 M0 0 H6.5" fill="none" stroke="#E3AE05" stroke-width="1.7"/>
+            <path d="M0 0 V11 M0 0 H11" fill="none" stroke="#EDC63C" stroke-width="2.6"/>
           </pattern>
 
           <radialGradient id="hatchFade" cx="50%" cy="50%" r="50%">
-            <stop offset="0%"   stop-color="#fff" stop-opacity=".16"/>
-            <stop offset="52%"  stop-color="#fff" stop-opacity=".52"/>
-            <stop offset="90%"  stop-color="#fff" stop-opacity=".95"/>
-            <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+            <stop offset="0%"   stop-color="#fff" stop-opacity=".95"/>
+            <stop offset="38%"  stop-color="#fff" stop-opacity=".86"/>
+            <stop offset="58%"  stop-color="#fff" stop-opacity=".4"/>
+            <stop offset="72%"  stop-color="#fff" stop-opacity="0"/>
           </radialGradient>
           <mask id="hatchMask">
-            <circle cx="200" cy="200" r="150" fill="url(#hatchFade)"/>
-          </mask>
-
-          <radialGradient id="discFade" cx="50%" cy="50%" r="50%">
-            <stop offset="0%"   stop-color="#fff" stop-opacity="1"/>
-            <stop offset="93%"  stop-color="#fff" stop-opacity="1"/>
-            <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
-          </radialGradient>
-          <mask id="discMask">
-            <circle cx="200" cy="200" r="150" fill="url(#discFade)"/>
+            <circle cx="200" cy="200" r="200" fill="url(#hatchFade)"/>
           </mask>
         </defs>
 
-        <circle class="sun-halo" cx="200" cy="200" r="200" fill="url(#sunHalo)"/>
-        <g mask="url(#discMask)">
-          <circle cx="200" cy="200" r="150" fill="url(#sunDisc)"/>
-          <circle cx="200" cy="200" r="150" fill="url(#sunDeepen)"/>
-        </g>
+        <circle cx="200" cy="200" r="200" fill="url(#sunBloom)"/>
         <g mask="url(#hatchMask)">
-          <rect x="40" y="40" width="320" height="320" fill="url(#sunHatch)"/>
+          <rect width="400" height="400" fill="url(#sunHatch)"/>
         </g>
       </svg>
-        </div>
-      </div>
-      <div class="horizon"></div>
-      <div class="land"><canvas class="land-canvas"></canvas></div>
     </div>
 
-    <h1 class="home-name rise" style="--d:.74s">Eleanor Marcotte</h1>
+    <h1 class="home-name">Eleanor Marcotte</h1>
+  </section>
 
-    <div class="home-actions rise" style="--d:.88s">
-      <a class="btn btn-solid" href="books.html">Explore the books</a>
-      <button class="btn btn-ghost" type="button" data-subscribe-open>Subscribe</button>
-    </div>
-
-    <p class="home-note rise" style="--d:1s">Books available on Amazon</p>
+  <div class="home-actions rise" style="--d:.5s">
+    <a class="btn btn-solid" href="books.html">Explore the books</a>
+    <button class="btn btn-ghost" type="button" data-subscribe-open>Subscribe</button>
   </div>
+
+  <p class="home-note rise" style="--d:.62s">Books available on Amazon</p>
 </main>
 
-<footer class="site-footer site-footer--home">
+<footer class="site-footer">
   <div class="wrap footer-inner">
     <p class="footer-brand">Eleanor&nbsp;Marcotte</p>
     <nav class="footer-nav" aria-label="Footer">

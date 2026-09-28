@@ -108,38 +108,26 @@ const SUBSCRIBE_ENDPOINT =
     });
   });
 
-  /* ── The dot wave ─────────────────────────────────────────────────── */
-  /* A field of dots standing in fixed columns. A travelling swell — three
-     sine components at different wavelengths and speeds, so it never settles
-     into a visible rhythm — lifts and drops each column in turn. Nothing
-     slides sideways; the dots only ever move up and down. */
-  (function landWave() {
-    const canvas = $(".land-canvas");
-    if (!canvas || !canvas.getContext) return;
+  /* ── The cover's halftone ─────────────────────────────────────────── */
+  /* The white dot field across the crown of the book, with a slow swell
+     passing through it. Dots hold their column and rise and fall in place —
+     nothing travels sideways, which is what separates a wave from a scroll.
+     Spacing, size taper and per-dot size variation are all measured off the
+     printed cover, and scale with the sun so the field keeps the book's
+     proportions at any width. */
+  (function coverDots() {
+    const canvas = $(".cover-dots");
+    const sunEl = $(".cover-sun");
+    if (!canvas || !canvas.getContext || !sunEl) return;
 
     const ctx = canvas.getContext("2d");
-    const STEP = 8; // dot grid spacing, px
+    let w = 0, h = 0, step = 28, raf = 0, onScreen = true, start = 0;
 
-    let w = 0,
-      h = 0,
-      hill = [39, 64, 31],
-      sand = [168, 150, 117],
-      raf = 0,
-      onScreen = true,
-      start = 0;
-
-    const toRGB = (v) => {
-      v = (v || "").trim();
-      return /^#[0-9a-f]{6}$/i.test(v)
-        ? [1, 3, 5].map((i) => parseInt(v.substr(i, 2), 16))
-        : null;
+    // A stable per-dot size wobble — the print's halftone is not uniform.
+    const jitter = (i, j) => {
+      const n = Math.sin(i * 127.1 + j * 311.7) * 43758.5453;
+      return 0.72 + (n - Math.floor(n)) * 0.56; // 0.72 – 1.28
     };
-
-    function readColours() {
-      const cs = getComputedStyle(document.documentElement);
-      hill = toRGB(cs.getPropertyValue("--hill")) || hill;
-      sand = toRGB(cs.getPropertyValue("--sand")) || sand;
-    }
 
     function resize() {
       const dpr = Math.min(devicePixelRatio || 1, 2);
@@ -149,41 +137,45 @@ const SUBSCRIBE_ENDPOINT =
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      // 28px at the cover's own scale, tied to the sun so the field keeps the
+      // book's proportions at any width. offsetWidth, not the bounding rect —
+      // the sun is mid scale-in when this first runs and a rect includes the
+      // transform, which would lock the spacing a few percent small.
+      const sun = sunEl.offsetWidth || 500;
+      step = Math.min(34, Math.max(13, sun * 0.0555));
     }
 
     function draw(t) {
       ctx.clearRect(0, 0, w, h);
 
-      const amp = h * 0.13;
-      const base = h * 0.36; // mean height of the crest line
-      const ceiling = h * 0.1; // keep the crests clear of the horizon line
-      const dr = hill[0] - sand[0],
-        dg = hill[1] - sand[1],
-        db = hill[2] - sand[2];
+      const fadeEnd = h * 0.58;        // the print's dots are gone by here
+      const fadeFrom = h * 0.24;
+      const rTop = step * 0.128;       // 3.6px at print scale
+      const rEnd = step * 0.055;
+      const amp = step * 0.34;
 
-      for (let x = STEP / 2; x < w; x += STEP) {
-        const surface = Math.max(
-          ceiling,
-          base +
-            amp * Math.sin(x / 168 + t * 0.42) +
-            amp * 0.58 * Math.sin(x / 79 - t * 0.29) +
-            amp * 0.34 * Math.sin(x / 312 + t * 0.17)
-        );
+      let j = 0;
+      for (let y0 = step * 0.5; y0 < fadeEnd + step * 2; y0 += step, j++) {
+        const d = Math.min(1, y0 / fadeEnd);
+        let alpha =
+          y0 <= fadeFrom ? 1 : 1 - (y0 - fadeFrom) / (fadeEnd - fadeFrom);
+        alpha = Math.max(0, alpha);
+        if (alpha <= 0.02) break;
 
-        const depth = Math.max(h - surface, 1);
+        const baseR = rTop + (rEnd - rTop) * d;
 
-        for (let y = surface; y < h; y += STEP) {
-          const d = (y - surface) / depth; // 0 at the crest, 1 at the base
-          const a = (1 - d) * (1 - d) * 0.8;
-          if (a < 0.015) break;
-          ctx.fillStyle =
-            "rgba(" +
-            Math.round(sand[0] + dr * (1 - d)) + "," +
-            Math.round(sand[1] + dg * (1 - d)) + "," +
-            Math.round(sand[2] + db * (1 - d)) + "," +
-            a.toFixed(3) + ")";
+        let i = 0;
+        for (let x = step * 0.5; x < w + step; x += step, i++) {
+          const phase = x / (step * 7.4) + y0 / (step * 21);
+          const swell =
+            Math.sin(phase + t * 0.36) + 0.55 * Math.sin(x / (step * 3.1) - t * 0.25);
+          const y = y0 + amp * swell;
+          const r = baseR * jitter(i, j) * (1 + 0.16 * Math.sin(phase + t * 0.36));
+          if (r <= 0.2) continue;
+          ctx.fillStyle = "rgba(255,255,255," + alpha.toFixed(3) + ")";
           ctx.beginPath();
-          ctx.arc(x, y, 1.5 - d * 0.6, 0, 6.2832);
+          ctx.arc(x, y, r, 0, 6.2832);
           ctx.fill();
         }
       }
@@ -194,7 +186,6 @@ const SUBSCRIBE_ENDPOINT =
       draw((now - start) / 1000);
       raf = requestAnimationFrame(frame);
     }
-
     function play() {
       if (raf || reduced || !onScreen || document.hidden) return;
       raf = requestAnimationFrame(frame);
@@ -204,11 +195,9 @@ const SUBSCRIBE_ENDPOINT =
       raf = 0;
     }
 
-    readColours();
     resize();
-    draw(0); // a still wave is on screen before the first frame runs
-
-    if (reduced) return; // reduced motion: the range simply stands still
+    draw(0); // a still field is on screen before the first frame runs
+    if (reduced) return;
 
     if ("ResizeObserver" in window) {
       new ResizeObserver(() => {
@@ -232,12 +221,6 @@ const SUBSCRIBE_ENDPOINT =
     document.addEventListener("visibilitychange", () =>
       document.hidden ? pause() : play()
     );
-
-    const dark = matchMedia("(prefers-color-scheme: dark)");
-    const onScheme = () => readColours();
-    dark.addEventListener
-      ? dark.addEventListener("change", onScheme)
-      : dark.addListener(onScheme);
 
     play();
   })();
@@ -403,7 +386,7 @@ const SUBSCRIBE_ENDPOINT =
         body: JSON.stringify({
           email: value,
           email_address: value, // ConvertKit / Mailchimp style
-          source: "eleanormarcotte.com",
+          source: location.hostname, // whatever domain the site is on that day
           _subject: "New subscriber — Live What Is Yours",
           _captcha: "false", // FormSubmit: skip its captcha page for AJAX posts
           _template: "table",

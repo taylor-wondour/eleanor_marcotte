@@ -25,26 +25,24 @@
                 U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
 }
 
+/* The site is light only. The books are printed on cream and the art is a
+   sunrise — there is no honest dark version of it, and the client asked for
+   white throughout. */
 :root{
-  --paper:      #FBFAF8;
-  --paper-2:    #F4F1EA;
+  --paper:      #FFFFFF;
+  --paper-2:    #F7F4EB;   /* warm tint for the books band */
   --surface:    #FFFFFF;
   --ink:        #17130F;
   --ink-2:      #5E5751;
   --ink-3:      #8C857C;
   --line:       rgba(23,19,15,.12);
   --line-soft:  rgba(23,19,15,.07);
-  --sun:        #D9A21A;   /* UI accent — darkened for contrast on cream */
-  --sun-core:   #FECC06;   /* the bright yellow at the centre of the cover's sun */
-  --sun-soft:   #F2DFA6;
+  --sun:        #CE9B12;   /* UI accent — darkened from the core for contrast */
+  --sun-core:   #F3D550;   /* the warm yellow at the centre of the cover's sun */
+  --sun-soft:   #F7E9B4;
 
   /* the rest of the cover palette, sampled from the printed art */
-  --sky:        #8FD4F1;   /* the blue band beneath the sun */
-  --hill:       #27401F;   /* the halftone dot range along the base */
-  --sand:       #A89675;   /* the warm ground under it */
-  --haze:       color-mix(in srgb, var(--paper) 84%, var(--sky));
-  --hill-dot:   color-mix(in srgb, var(--hill) 66%, transparent);
-  --horizon:    rgba(23,19,15,.32);
+  --sky-crown:  #E8D368;   /* the yellow at the top of the cover */
   --shadow:     0 1px 2px rgba(23,19,15,.05), 0 12px 28px -12px rgba(23,19,15,.18);
   --shadow-lg:  0 1px 2px rgba(23,19,15,.06), 0 28px 60px -20px rgba(23,19,15,.30);
 
@@ -60,30 +58,6 @@
   color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark){
-  :root{
-    --paper:     #131211;
-    --paper-2:   #1A1817;
-    --surface:   #1C1A18;
-    --ink:       #F3EFE9;
-    --ink-2:     #ADA69D;
-    --ink-3:     #837B72;
-    --line:      rgba(243,239,233,.14);
-    --line-soft: rgba(243,239,233,.08);
-    --sun:       #EAC15C;
-    --sun-core:  #FECC06;
-    --sun-soft:  #4A3E22;
-    --sky:       #2F5568;
-    --hill:      #9FB489;
-    --sand:      #7A6C54;
-    --haze:      color-mix(in srgb, var(--paper) 86%, var(--sky));
-    --hill-dot:  color-mix(in srgb, var(--hill) 40%, transparent);
-    --horizon:   rgba(243,239,233,.30);
-    --shadow:    0 1px 2px rgba(0,0,0,.5), 0 12px 28px -12px rgba(0,0,0,.7);
-    --shadow-lg: 0 1px 2px rgba(0,0,0,.5), 0 28px 60px -20px rgba(0,0,0,.8);
-    color-scheme: dark;
-  }
-}
 
 /* ── Base ────────────────────────────────────────────────────────────── */
 
@@ -322,168 +296,111 @@ html:has(.home) body{
 }
 .home{
   flex:1;
-  display:grid;
-  place-items:center;
-  padding-block: clamp(40px, 7vh, 84px) clamp(36px, 6vh, 74px);
-  text-align:center;
-}
-
-.home-inner{
-  /* the sun is capped by viewport height so the whole page holds on a laptop */
-  --sun-size: min(clamp(224px, 39vw, 392px), 38vh);
-
-  /* Nothing in the composition may show a straight edge: everything is faded
-     out at the sides, so the sky and the land end in air rather than in a box. */
-  --edge-fade:linear-gradient(to right,
-    transparent 0%, #000 13%, #000 87%, transparent 100%);
-
-
   display:flex;
   flex-direction:column;
   align-items:center;
 }
 
-/* The sun rises from behind a horizon line. The line is the land: it clips the
-   disc, so the sun never reaches the name below it. */
-.sunrise{
-  width:min(760px, 100%);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-}
-
-/* Sky: warm at the sun, cooling to the cover's blue band as it nears the land. */
-.sunrise-window{
+/* The cover's top half: full bleed, running off the top of the page, the
+   colour graduating to white exactly where the page takes over. */
+.cover{
+  --sun-size: min(clamp(300px, 56vw, 620px), 56vh);
   position:relative;
   width:100%;
-  height:calc(var(--sun-size) * .74);
-  overflow:hidden;
   display:flex;
-  justify-content:center;
-  /* An ellipse rising off the horizon rather than a band, so the sky has no
-     straight edge anywhere — it simply runs out of air. */
-  background:radial-gradient(78% 118% at 50% 100%,
-    color-mix(in srgb, var(--sky) 20%, transparent) 0%,
-    color-mix(in srgb, var(--sky) 10%, transparent) 44%,
-    transparent 76%);
-  -webkit-mask-image:var(--edge-fade);
-          mask-image:var(--edge-fade);
+  flex-direction:column;
+  align-items:center;
+  padding-block: clamp(16px, 3vh, 46px) clamp(24px, 4vh, 54px);
+  padding-inline: var(--gut);
+  overflow:hidden;
+  isolation:isolate;
 }
 
-.sun{
-  width:var(--sun-size);
-  height:var(--sun-size);
-  flex:none;
-  animation:sunrise 1.85s cubic-bezier(.16,.7,.24,1) .16s both;
-}
-.sun-svg{ width:100%; height:100%; }
-
-/* Atmosphere: the disc thins into the ground as it nears the land. */
-.sunrise-window::after{
-  content:"";
+/* Read straight down the printed cover's left edge, ending on the page's
+   own white so there is no seam between the art and the page. */
+.cover-field{
   position:absolute;
-  inset:0;                 /* full-height, so the overlay has no visible edge */
+  inset:0;
+  z-index:-1;
   background:linear-gradient(to bottom,
-    transparent 58%,
-    color-mix(in srgb, var(--haze) 30%, transparent) 82%,
-    color-mix(in srgb, var(--haze) 72%, transparent) 100%);
-  pointer-events:none;
+    #E8D368 0%,
+    #E6D478 14%,
+    #EADB93 32%,
+    #EDE0AA 48%,
+    #EEE5C1 63%,
+    #F0E9D8 77%,
+    #F5F2EC 89%,
+    var(--paper) 100%);
 }
 
-.horizon{
-  position:relative;
-  z-index:2;
-  width:100%;
-  height:1px;
-  background:linear-gradient(to right,
-    transparent 0%,
-    var(--horizon) 16%,
-    var(--horizon) 84%,
-    transparent 100%);
-  animation:horizonIn 1s var(--ease) both;
-}
-
-/* Light spilling onto the land as the sun clears it. */
-.horizon::after{
-  content:"";
+/* The white halftone across the crown — drawn per frame in main.js so a slow
+   swell can pass through it. Spacing and dot size are measured off the print:
+   ~28px apart and 3.6px → 1.6px as it recedes, at the cover's own scale. */
+.cover-dots{
   position:absolute;
-  left:50%; top:0;
-  width:calc(var(--sun-size) * 1.25);
-  height:calc(var(--sun-size) * .3);
-  transform:translateX(-50%);
-  background:radial-gradient(ellipse at 50% 0%,
-    color-mix(in srgb, var(--sun-core) 20%, transparent) 0%,
-    transparent 72%);
-  pointer-events:none;
-  animation:glowIn 1.5s var(--ease) .5s both;
-}
-
-/* The halftone dot range from the base of the covers, receding below the
-   horizon. The contour is an SVG mask; the dots are a CSS pattern, so they
-   stay circular however wide the band gets. */
-.land{
-  position:relative;
-  z-index:1;
-  width:100%;
-  height:calc(var(--sun-size) * .25);
-  overflow:hidden;
-  -webkit-mask-image:var(--edge-fade);
-          mask-image:var(--edge-fade);
-  animation:landIn 1.4s var(--ease) .6s both;
-}
-
-/* Each dot rides its own column, rising and falling as the wave passes through
-   it — drawn per frame in `assets/js/main.js`, because a CSS pattern can only
-   ever be slid around, never made to swell. */
-.land-canvas{
+  inset:0;
   display:block;
   width:100%;
   height:100%;
 }
 
-@keyframes landIn{
-  from{ opacity:0; transform:translateY(8px); }
+/* What no-JS viewers get instead: the same field, standing still. */
+.cover-dots-static{
+  position:absolute;
+  inset:0;
+  background-image:
+    radial-gradient(circle at center, #fff 2.9px, transparent 3.2px),
+    radial-gradient(circle at center, rgba(255,255,255,.72) 1.7px, transparent 2px);
+  background-size:38px 38px, 27px 27px;
+  background-position:0 0, 19px 14px;
+  -webkit-mask-image:linear-gradient(to bottom, #000 0%, #000 26%, transparent 58%);
+          mask-image:linear-gradient(to bottom, #000 0%, #000 26%, transparent 58%);
+}
+html.js .cover-dots-static{ display:none; }
+
+.cover-sun{
+  width:var(--sun-size);
+  max-width:100%;
+  aspect-ratio:1;
+  animation:sunIn 1.5s cubic-bezier(.2,.7,.25,1) both;
+}
+.sun-svg{ width:100%; height:100%; }
+
+@keyframes sunIn{
+  from{ opacity:0; transform:scale(.94); }
 }
 
-@keyframes sunrise{
-  from{ transform:translateY(54%); opacity:0; }
-  30%{ opacity:1; }
-  to{ transform:translateY(0); opacity:1; }
-}
-@keyframes horizonIn{
-  from{ transform:scaleX(.24); opacity:0; }
-}
-@keyframes glowIn{
-  from{ opacity:0; }
-}
-
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]) .sun-halo{ opacity:.55; }
-}
-
+/* Set where the title sits on the cover: low on the sun, where the field has
+   already given way to near-white. */
 .home-name{
-  margin-top:clamp(14px, 2.4vh, 28px);
+  margin-top:calc(var(--sun-size) * -.24);
   font-family:var(--serif);
-  font-size:clamp(38px, 8.4vw, 86px);
+  font-size:clamp(34px, 7.6vw, 82px);
   line-height:1.02;
   letter-spacing:-.018em;
+  text-align:center;
   text-wrap:balance;
+  animation:rise .9s var(--ease) .32s both;
 }
 
 .home-actions{
-  margin-top:clamp(30px, 4.6vh, 44px);
+  margin-top:clamp(30px, 5vh, 52px);
   display:flex;
   flex-wrap:wrap;
   gap:12px;
   justify-content:center;
+  padding-inline:var(--gut);
 }
 
 .home-note{
-  margin-top:clamp(18px, 2.6vh, 24px);
+  margin-top:clamp(18px, 2.6vh, 26px);
+  margin-bottom:clamp(28px, 5vh, 56px);
   font-size:12.5px;
   letter-spacing:.1em;
   text-transform:uppercase;
   color:var(--ink-3);
+  text-align:center;
+  padding-inline:var(--gut);
 }
 
 /* ── Series masthead (books page) ────────────────────────────────────── */
@@ -804,10 +721,6 @@ html:has(.home) body{
   -webkit-backdrop-filter:blur(6px);
   backdrop-filter:blur(6px);
 }
-@media (prefers-color-scheme: dark){
-  .modal::backdrop{ background:rgba(0,0,0,.6); }
-}
-
 .modal[open]{ animation:modalIn .34s var(--ease) both; }
 .modal[open]::backdrop{ animation:fadeIn .34s var(--ease) both; }
 .modal.is-closing{ animation:modalOut .2s var(--ease) both; }
@@ -908,9 +821,6 @@ html:has(.home) body{
   line-height:1.4;
 }
 .form-msg.is-error{ color:#C0392B; }
-@media (prefers-color-scheme: dark){
-  .form-msg.is-error{ color:#E8796B; }
-}
 .form-msg.is-setup{
   color:var(--ink-2);
   background:color-mix(in srgb, var(--sun) 14%, transparent);

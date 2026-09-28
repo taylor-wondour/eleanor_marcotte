@@ -19,10 +19,11 @@ already done; the Amazon links and the site URL still need you.
 All site communication — the subscribe form and the Contact link — goes to
 **authoreleanormarcotte@gmail.com**.
 
-### a. Amazon links (required)
+### a. Amazon links — one still missing
 
-Open `books.html` and search for **`AMAZON-LINK`**. There are three, one per
-published book. Replace the `href` on the line below each comment:
+The Workbook and the Daily Tracker & Notes are linked. **The Companion Journal
+is still a placeholder.** Open `books.html`, search for **`AMAZON-LINK`** — the
+one remaining comment marks it — and replace the `href` on the line below it:
 
 ```html
 <a class="btn btn-outline btn-sm" href="https://www.amazon.com/dp/REPLACE_WITH_ASIN" ...>
@@ -131,22 +132,22 @@ assets/img/apple-touch-icon.png home-screen icon
 .nojekyll                       tells GitHub Pages to serve files as-is
 ```
 
-The home page's sunrise is drawn, not photographed. The sun is SVG inside
-`index.html` — a graded disc, a diamond crosshatch densifying toward the rim, a
-halo, and an amber deepening toward its base. The sky, the horizon line and the
-halftone hills are CSS in `styles.css`. Nothing is a cropped image, so it stays
-exact at any size.
+The home page is the top half of the workbook cover — full bleed, running off
+the top of the page, the colour graduating to white exactly where the page
+takes over and the name sitting low on the sun. It is drawn, not photographed:
+the sun is SVG inside `index.html`, the field and the halftone are CSS in
+`styles.css`. Nothing is a cropped image, so it stays exact at any size.
+
+The site is **light only**. The books are printed on cream and the art is a
+sunrise; there is no honest dark version of it.
 
 Every colour comes from the printed covers, sampled from the art:
 
-| Token         | Value     | Where it comes from                        |
-|---------------|-----------|--------------------------------------------|
-| `--sun-core`  | `#FECC06` | the centre of the workbook cover's sun      |
-| `--sky`       | `#8FD4F1` | the blue band beneath it                    |
-| `--hill`      | `#27401F` | the dot range along the base of the covers  |
-| `--sand`      | `#A89675` | the warm ground under the dots              |
-
-All four have dark-mode counterparts in the `prefers-color-scheme` block.
+| Token         | Value     | Where it comes from                   |
+|---------------|-----------|---------------------------------------|
+| `--sun-core`  | `#F3D550` | the centre of the cover's sun          |
+| `--sky-crown` | `#E8D368` | the yellow at the top of the cover     |
+| `--paper`     | `#FFFFFF` | the page below the art                 |
 
 Fonts are self-hosted rather than loaded from Google, so the site has no
 third-party requests at all — faster, and nothing to disclose in a privacy
@@ -180,9 +181,6 @@ the `src`, `srcset`, and `alt` text.
 **Change the colours or spacing.** Everything lives in the `:root` block at the
 top of `styles.css` — one place for ink, paper, the sun yellow, the rhythm of
 the section padding. The dark-mode palette sits directly below it.
-
-**Turn off dark mode.** Delete the `@media (prefers-color-scheme: dark)` block
-in `styles.css` and set `color-scheme: light` only.
 
 ---
 
